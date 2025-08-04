@@ -1,4 +1,4 @@
-# Text-to-Learn: AI-Powered Course Generator
+# CourseGen: AI-Powered Course Generator
 
 Transform any topic into a structured, multi-module online course with AI-powered content generation, interactive elements, and multilingual support.
 
@@ -8,6 +8,246 @@ Transform any topic into a structured, multi-module online course with AI-powere
 - **AI Course Generation**: Transform any topic prompt into comprehensive course content using Google Gemini AI
 - **Multi-Modal Content**: Support for text, code blocks, videos, images, lists, and interactive MCQs
 - **Hinglish Support**: AI-generated explanations in Hinglish with audio playback
+- **YouTube Integration**: Automatic video suggestions and embedding for lesson content
+- **PDF Export**: Export complete lessons or courses to PDF format
+- **Progress Tracking**: Monitor learning progress across modules and lessons
+- **Responsive Design**: Mobile-friendly interface with dark/light mode support
+
+### Technical Features
+- **Auth0 Authentication**: Secure user authentication and authorization
+- **Real-time Updates**: Dynamic content loading and updates
+- **RESTful API**: Clean, documented API endpoints
+- **MongoDB Storage**: Scalable database with efficient data modeling
+- **Modern UI**: Built with Chakra UI for consistent design system
+
+## Technology Stack
+
+### Frontend
+- **React 18** with Vite for fast development
+- **Chakra UI** for component library and theming
+- **React Router** for navigation
+- **Auth0 React SDK** for authentication
+- **Axios** for API communication
+- **React Helmet** for SEO optimization
+
+### Backend
+- **Node.js** with Express.js framework
+- **MongoDB** with Mongoose ODM
+- **Auth0** JWT authentication
+- **Google Gemini AI** for content generation
+- **YouTube Data API** for video integration
+- **Express Rate Limit** for API protection
+
+## Architecture
+
+### Frontend (React + Vite)
+```
+client/
+├── src/
+│   ├── components/          # Reusable UI components
+│   │   ├── blocks/         # Content block renderers
+│   │   ├── Navbar.jsx      # Navigation component
+│   │   ├── Sidebar.jsx     # Course navigation
+│   │   └── ...
+│   ├── pages/              # Page components
+│   │   ├── HomePage.jsx    # Course creation
+│   │   ├── CoursePage.jsx  # Course overview
+│   │   ├── LessonPage.jsx  # Lesson viewer
+│   │   └── ...
+│   ├── hooks/              # Custom React hooks
+│   ├── utils/              # Utilities and API helpers
+│   └── main.jsx           # App entry point
+└── package.json
+```
+
+### Backend (Node.js + Express)
+```
+server/
+├── controllers/            # Request handlers
+├── models/                # MongoDB schemas
+├── routes/                # API routes
+├── services/              # Business logic
+├── middlewares/           # Custom middleware
+├── utils/                 # Helper functions
+├── config/                # Configuration
+└── server.js             # Server entry point
+```
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18.0.0 or higher
+- MongoDB (local or MongoDB Atlas)
+- Auth0 account
+- Google AI (Gemini) API key
+- YouTube Data API v3 key
+
+### Installation
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/RoshanJSingh/CourseGen.git
+cd CourseGen
+```
+
+2. **Install backend dependencies**
+```bash
+cd server
+npm install
+```
+
+3. **Install frontend dependencies**
+```bash
+cd ../client
+npm install
+```
+
+4. **Configure environment variables**
+
+Create `server/.env` file:
+```env
+NODE_ENV=development
+PORT=5000
+MONGO_URI=mongodb://localhost:27017/coursegen
+
+# Auth0 Configuration
+AUTH0_ISSUER=https://your-auth0-domain.auth0.com/
+AUTH0_AUDIENCE=your-api-identifier
+
+# AI Services
+GEMINI_API_KEY=your-google-genai-key
+YOUTUBE_API_KEY=your-youtube-data-api-key
+
+# CORS Settings
+FRONTEND_URL=http://localhost:5173
+```
+
+Create `client/.env` file:
+```env
+VITE_AUTH0_DOMAIN=your-auth0-domain.auth0.com
+VITE_AUTH0_CLIENT_ID=your-auth0-client-id
+VITE_AUTH0_AUDIENCE=your-api-identifier
+VITE_API_URL=http://localhost:5000
+```
+
+5. **Start the development servers**
+
+Backend server:
+```bash
+cd server
+npm run dev
+```
+
+Frontend server (in new terminal):
+```bash
+cd client
+npm run dev
+```
+
+The application will be available at `http://localhost:5173`
+
+## API Documentation
+
+### Authentication
+All protected routes require a valid JWT token in the Authorization header:
+```
+Authorization: Bearer <your-jwt-token>
+```
+
+### Core Endpoints
+
+#### Courses
+- `POST /api/courses` - Generate new course from topic
+- `GET /api/courses` - Get user's courses
+- `GET /api/courses/:id` - Get specific course
+- `PUT /api/courses/:id` - Update course
+- `DELETE /api/courses/:id` - Delete course
+
+#### Lessons
+- `GET /api/lessons/:id` - Get lesson content
+- `PUT /api/lessons/:id` - Update lesson
+- `POST /api/lessons/:id/blocks` - Add content block
+- `PUT /api/lessons/:id/blocks/:index` - Update content block
+
+#### AI Services
+- `POST /api/ai/generate-course` - Generate course structure
+- `POST /api/ai/generate-lesson` - Generate lesson content
+- `POST /api/ai/translate-hinglish` - Translate to Hinglish
+
+## Data Models
+
+### Course
+- Title, description, creator
+- Modules array with lessons
+- Tags, difficulty level, public/private
+- Creation and update timestamps
+
+### Module
+- Title, description, course reference
+- Lessons array, order, objectives
+- Estimated hours, completion status
+
+### Lesson
+- Title, content blocks array
+- Module reference, order, objectives
+- Estimated reading time, enrichment status
+
+### Content Block Types
+1. **Heading**: Text with hierarchy levels (h1-h6)
+2. **Paragraph**: Rich text content
+3. **Code**: Syntax-highlighted code snippets
+4. **List**: Ordered or unordered lists
+5. **Video**: YouTube video embeds with metadata
+6. **MCQ**: Multiple choice questions with answers
+7. **Image**: Image blocks with captions
+
+## Deployment
+
+### Production Build
+
+1. **Build frontend**
+```bash
+cd client
+npm run build
+```
+
+2. **Configure production environment**
+Update environment variables for production URLs and keys.
+
+3. **Deploy backend**
+The backend can be deployed to platforms like Heroku, Railway, or AWS.
+
+4. **Deploy frontend**
+The built frontend can be deployed to Vercel, Netlify, or any static hosting service.
+
+### Environment Configuration
+Ensure all environment variables are properly set in your deployment platform.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For support and questions:
+- Create an issue in the GitHub repository
+- Check the documentation for common solutions
+
+## Acknowledgments
+
+- Google Gemini AI for content generation
+- Auth0 for authentication services
+- YouTube Data API for video integration
+- Chakra UI for component library
+- MongoDB for database services
 - **YouTube Integration**: Automatic video recommendations and embedding
 - **PDF Export**: Export lessons as beautifully formatted PDF documents
 - **Progress Tracking**: User progress monitoring and course completion tracking
@@ -338,5 +578,6 @@ For support, email support@text-to-learn.com or join our [Discord community](htt
 ---
 
 **Built with love for learners worldwide**
-#   C o u r s e G e n  
+#   C o u r s e G e n 
+ 
  
