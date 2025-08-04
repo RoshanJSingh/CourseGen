@@ -301,7 +301,7 @@ server/
 └── server.js             # Server entry point
 ```
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - Node.js 18+ and npm
@@ -530,54 +530,6 @@ npm run test:e2e
 - Rate limiting
 - Request compression
 
-## Monitoring & Analytics
 
-### Error Tracking
-- Frontend error boundaries
-- Backend error middleware
-- Logging with Morgan
-- Performance monitoring
 
-### User Analytics
-- Course completion rates
-- User engagement metrics
-- Content performance tracking
-- Learning path analysis
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-- Follow ESLint configuration
-- Write comprehensive tests
-- Update documentation
-- Use conventional commits
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- **Google Gemini AI** for content generation
-- **Auth0** for authentication services
-- **YouTube API** for video integration
-- **Chakra UI** for component library
-- **MongoDB** for data storage
-- **Vercel & Render** for hosting services
-
-## Support
-
-For support, email support@text-to-learn.com or join our [Discord community](https://discord.gg/text-to-learn).
-
----
-
-**Built with love for learners worldwide**
-#   C o u r s e G e n 
- 
  
