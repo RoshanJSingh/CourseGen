@@ -1,151 +1,117 @@
-# 🎓 CourseGen: AI-Powered Course Generator
+# CourseGen (Text-to-Learn)
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Node](https://img.shields.io/badge/node->=18.0.0-green.svg)
-![Status](https://img.shields.io/badge/status-active-success.svg)
+Type in a topic and CourseGen builds a full online course for it: modules, lessons, code examples, quizzes and suggested YouTube videos. The content is written by Google Gemini, and lessons can also be explained in Hinglish.
 
-> **Transform any topic into a structured, multi-module online course with AI-powered content generation, interactive elements, and multilingual support.**
+The project has two parts:
 
----
+- `server/`: a Node.js and Express API that does the real work (course generation, lessons, YouTube search, Hinglish translation and PDF export), with MongoDB for storage and Auth0 for login.
+- `client/`: a simple web page in plain HTML, CSS and JavaScript that talks to the API.
 
-## 🚀 Features
+## Features
 
-### Core Capabilities
-- **🤖 AI Course Generation**: Instantly create comprehensive course structures and content using **Google Gemini AI**.
-- **📚 Multi-Modal Content**: Rich lessons with text, code blocks, videos, images, and interactive lists.
-- **🇮🇳 Hinglish Support**: Unique AI explanations in Hinglish with generated audio playback.
-- **🎥 YouTube Integration**: Automatic video suggestions and embedding for every lesson.
-- **📄 PDF Export**: Download complete lessons as beautifully formatted PDFs.
-- **📊 Progress Tracking**: Track your learning journey with detailed progress bars and completion status.
-- **📱 Responsive Design**: A stunning, mobile-first UI with Dark/Light mode support.
+- Turns any topic into a course made of modules and lessons, using Gemini.
+- Lessons are built from content blocks: headings, paragraphs, code, lists, images, videos and multiple choice questions.
+- Suggests and embeds relevant YouTube videos for each lesson.
+- Translates lesson content into Hinglish, and can generate Hinglish audio.
+- Exports a lesson as a PDF.
+- Keeps stats for each course and lesson.
+- Login with Auth0. Most routes need a signed-in user.
+- Helmet security headers, rate limiting, CORS rules and input validation on every route.
+- A `/health` endpoint for uptime checks.
 
-### Technical Highlights
-- **🔐 Secure Authentication**: Auth0 integration for robust user management and role-based access.
-- **⚡ Real-time Updates**: Fast, dynamic content loading with React and Vite.
-- **🛣️ RESTful API**: Well-structured API endpoints with validation and error handling.
-- **🛡️ Enhanced Security**: Helmet, Rate Limiting, and CORS configuration.
-- **🩺 System Health Monitoring**: Detailed health check endpoint for DevOps monitoring.
+## Tech
 
----
-
-## 🛠️ Technology Stack
-
-| Domain | Technologies |
+| Part | Tools |
 |:---|:---|
-| **Frontend** | React 18, Vite, Chakra UI, React Router, Axios, Framer Motion |
-| **Backend** | Node.js, Express.js, MongoDB (Mongoose), PDFKit |
-| **AI & Data** | Google Gemini AI, YouTube Data API |
-| **Auth & Ops** | Auth0, Helmet, Morgan, Express-Rate-Limit |
+| Frontend | HTML, CSS, JavaScript |
+| Backend | Node.js, Express, MongoDB (Mongoose), PDFKit |
+| AI and data | Google Gemini, YouTube Data API |
+| Auth and ops | Auth0, Helmet, Morgan, express-rate-limit |
 
----
+## Layout
 
-## 🏗️ Architecture
-
-### Frontend Structure
-```bash
-client/
-├── src/
-│   ├── components/    # Atomic UI components & Blocks
-│   ├── pages/         # Route implementations (Home, Course, Lesson)
-│   ├── hooks/         # Custom React hooks (useAuth, useCourse)
-│   ├── utils/         # API clients and helpers
-│   └── main.jsx       # Application entry point
+```
+CourseGen/
+├── client/          index.html, app.js, style.css
+├── server/
+│   ├── config/      database connection
+│   ├── controllers/ course and lesson logic
+│   ├── middlewares/ Auth0 check and error handling
+│   ├── models/      Mongoose schemas (Course, Module, Lesson)
+│   ├── routes/      auth, courses, lessons, ai, youtube
+│   ├── services/    Gemini and YouTube API code
+│   └── server.js    entry point
+└── scripts/         build and deploy helpers
 ```
 
-### Backend Structure
+## Getting started
+
+You will need Node.js 18 or newer, a MongoDB database (local or Atlas), a Gemini API key, a YouTube Data API key and an Auth0 account.
+
 ```bash
-server/
-├── controllers/       # Logic for Courses, Lessons, AI
-├── models/           # Mongoose Schemas (User, Course, Module, Lesson)
-├── routes/           # API Route Definitions
-├── services/         # External Services (Gemini, YouTube)
-└── server.js         # Entry point & Configuration
+git clone https://github.com/RoshanJSingh/CourseGen.git
+cd CourseGen/server
+npm install
+cp .env.example .env    # then fill in your keys
+npm run dev             # API runs on http://localhost:5000
 ```
 
----
+The client is a static page, so any local server will do. In a second terminal:
 
-## 🏁 Getting Started
+```bash
+cd CourseGen/client
+python -m http.server 5173
+```
 
-### Prerequisites
-- **Node.js**: v18.0.0 or higher
-- **MongoDB**: Local instance or Atlas URI
-- **API Keys**: Google Gemini AI, YouTube Data API, Auth0 Credentials
+Then open http://localhost:5173.
 
-### Installation
+## API
 
-1.  **Clone the Repository**
-    ```bash
-    git clone https://github.com/roshansinghabc123-cmd/CourseGen.git
-    cd CourseGen
-    ```
+All routes are under `/api`. Routes marked "login" need a valid Auth0 token.
 
-2.  **Install Dependencies**
-    ```bash
-    # Backend
-    cd server
-    npm install
+**Courses**
 
-    # Frontend
-    cd ../client
-    npm install
-    ```
-
-3.  **Environment Setup**
-    Create `.env` files in both `server/` and `client/` directories based on the provided `.env.example`.
-
-4.  **Run the Application**
-    ```bash
-    # Terminal 1: Backend
-    cd server
-    npm run dev
-
-    # Terminal 2: Frontend
-    cd client
-    npm run dev
-    ```
-
-    OPEN: `http://localhost:5173`
-
----
-
-## 📖 API Documentation
-
-### Courses
-| Method | Endpoint | Description |
+| Method | Route | What it does |
 |:---|:---|:---|
-| `POST` | `/api/courses` | Generate a new course from a topic |
-| `GET` | `/api/courses` | List all user courses |
-| `GET` | `/api/courses/:id` | Get course details |
-| `PUT` | `/api/courses/:id` | Update course metadata |
-| `DELETE` | `/api/courses/:id` | Delete a course |
+| `POST` | `/courses/suggestions` | suggest course ideas |
+| `POST` | `/courses` | generate a new course from a topic (login) |
+| `GET` | `/courses` | list your courses (login) |
+| `GET` | `/courses/stats` | stats across your courses (login) |
+| `GET` | `/courses/:id` | get one course (login) |
+| `PUT` | `/courses/:id` | update a course (login) |
+| `DELETE` | `/courses/:id` | delete a course (login) |
 
-### Lessons
-| Method | Endpoint | Description |
+**Lessons** (all need login)
+
+| Method | Route | What it does |
 |:---|:---|:---|
-| `GET` | `/api/lessons/:id` | Get lesson content |
-| `PUT` | `/api/lessons/:id` | Update lesson content |
-| `GET` | `/api/lessons/:id/pdf` | **Export Lesson as PDF** |
-| `POST` | `/api/lessons/:id/blocks` | Add a content block |
-| `POST` | `/api/ai/translate-hinglish`| Translate content to Hinglish |
+| `GET` | `/lessons/:id` | get a lesson, generating its content if needed |
+| `PUT` | `/lessons/:id` | update a lesson |
+| `GET` | `/lessons/:id/pdf` | download the lesson as a PDF |
+| `POST` | `/lessons/:id/blocks` | add a content block |
+| `PUT` | `/lessons/:id/blocks/:index` | edit a content block |
+| `DELETE` | `/lessons/:id/blocks/:index` | remove a content block |
+| `POST` | `/lessons/:id/audio/hinglish` | make Hinglish audio for the lesson |
+| `GET` | `/lessons/:id/analytics` | lesson stats |
 
-### System
-| Method | Endpoint | Description |
+**AI, YouTube and auth**
+
+| Method | Route | What it does |
 |:---|:---|:---|
-| `GET` | `/health` | Check system uptime and resources |
+| `GET` | `/ai/status` | check the AI service |
+| `POST` | `/ai/course-suggestions` | course ideas from Gemini |
+| `POST` | `/ai/generate-course` | generate a course outline (login) |
+| `POST` | `/ai/generate-lesson` | generate lesson content (login) |
+| `POST` | `/ai/translate-hinglish` | translate text to Hinglish (login) |
+| `GET` | `/youtube/search` | search for educational videos |
+| `GET` | `/youtube/trending` | trending educational videos |
+| `GET` | `/youtube/validate` | check a YouTube URL |
+| `GET` | `/youtube/captions/:videoId` | get a video's captions |
+| `GET` | `/youtube/embed/:videoId` | get embed HTML for a video |
+| `GET` | `/auth/status` | auth setup info |
+| `GET` | `/auth/profile` | your profile (login) |
+| `GET` | `/auth/verify` | check a token (login) |
 
----
+There is also `GET /health` outside `/api` for uptime checks.
 
-## 🤝 Contributing
-
-We welcome contributions! Please follow these steps:
-1.  Fork the repository.
-2.  Create a feature branch (`git checkout -b feature/AmazingFeature`).
-3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4.  Push to the branch (`git push origin feature/AmazingFeature`).
-5.  Open a Pull Request.
-
----
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
+More detail on the backend, including the environment variables and the content block format, is in [server/README.md](server/README.md).
