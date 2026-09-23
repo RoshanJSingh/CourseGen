@@ -1,265 +1,204 @@
-# Text-to-Learn Backend
+# CourseGen backend (Text-to-Learn)
 
-AI-Powered Course Generator Backend API built with Node.js, Express, and MongoDB.
+The API behind CourseGen. It is built with Node.js, Express and MongoDB, and uses Google Gemini to write the course content.
 
-## Features
+## What it does
 
-- 🤖 **AI-Powered Course Generation**: Generate structured courses from simple topic prompts
-- 🔐 **Auth0 Authentication**: Secure user authentication and authorization
-- 📚 **Rich Lesson Content**: Support for various content types (text, code, videos, quizzes)
-- 🌐 **YouTube Integration**: Automatic video suggestions for lessons
-- 🗣️ **Multilingual Support**: Hinglish translations for enhanced accessibility
-- 📊 **Analytics**: Course and lesson analytics for users
-- 🚀 **RESTful API**: Clean, well-documented API endpoints
+- Generates a structured course from a short topic prompt
+- Handles login with Auth0
+- Stores lessons as flexible content blocks (text, code, video, quizzes and more)
+- Suggests YouTube videos for lessons
+- Translates lessons into Hinglish and can generate Hinglish audio
+- Exports lessons as PDFs
+- Keeps simple stats for courses and lessons
 
-## Technology Stack
+## Tech
 
-- **Runtime**: Node.js 18+
-- **Framework**: Express.js
-- **Database**: MongoDB with Mongoose
-- **Authentication**: Auth0 (JWT)
-- **AI Service**: Google Gemini AI
-- **Video Service**: YouTube Data API v3
-- **Validation**: Express Validator
-- **Security**: Helmet, CORS, Rate Limiting
+- **Runtime:** Node.js 18+
+- **Framework:** Express
+- **Database:** MongoDB with Mongoose
+- **Login:** Auth0 (JWT)
+- **AI:** Google Gemini
+- **Videos:** YouTube Data API v3
+- **Validation:** express-validator
+- **Security:** Helmet, CORS, rate limiting
 
-## Prerequisites
+## What you need
 
-- Node.js 18.0.0 or higher
-- MongoDB (local or MongoDB Atlas)
-- Auth0 account
-- Google AI (Gemini) API key
-- YouTube Data API v3 key
+- Node.js 18.0.0 or newer
+- MongoDB, local or on MongoDB Atlas
+- An Auth0 account
+- A Google Gemini API key
+- A YouTube Data API v3 key
 
-## Installation
+## Setup
 
-1. **Clone the repository**
+1. Get the code:
    ```bash
-   git clone <repository-url>
-   cd text-to-learn/server
+   git clone https://github.com/RoshanJSingh/CourseGen.git
+   cd CourseGen/server
    ```
 
-2. **Install dependencies**
+2. Install the packages:
    ```bash
    npm install
    ```
 
-3. **Environment Configuration**
+3. Create your config file:
    ```bash
    cp .env.example .env
    ```
-   
-   Edit `.env` with your configuration:
+
+   Then fill in `.env`:
    ```env
    NODE_ENV=development
    PORT=5000
    MONGO_URI=mongodb://localhost:27017/text-to-learn
-   
-   # Auth0 Configuration
+
+   # Auth0
    AUTH0_ISSUER=https://your-auth0-domain.auth0.com/
    AUTH0_AUDIENCE=your-api-identifier
-   
-   # AI Services
+
+   # AI services
    GEMINI_API_KEY=your-google-genai-key
    YOUTUBE_API_KEY=your-youtube-data-api-key
-   
-   # CORS Settings
+
+   # CORS
    FRONTEND_URL=http://localhost:5173
    ```
 
-4. **Start the development server**
+4. Start the dev server:
    ```bash
    npm run dev
    ```
 
-## API Documentation
+## API
 
-### Authentication Endpoints
+"Login" means the route needs a valid Auth0 token.
 
-- `GET /api/auth/status` - Get authentication configuration
-- `GET /api/auth/profile` - Get user profile (Protected)
-- `GET /api/auth/verify` - Verify JWT token (Protected)
+### Auth
 
-### Course Endpoints
+- `GET /api/auth/status`: auth setup info
+- `GET /api/auth/profile`: your profile (login)
+- `GET /api/auth/verify`: check a token (login)
 
-- `POST /api/courses/suggestions` - Get course suggestions (Public)
-- `GET /api/courses` - Get user courses (Protected)
-- `POST /api/courses` - Generate new course (Protected)
-- `GET /api/courses/stats` - Get course statistics (Protected)
-- `GET /api/courses/:id` - Get single course (Protected)
-- `PUT /api/courses/:id` - Update course (Protected)
-- `DELETE /api/courses/:id` - Delete course (Protected)
+### Courses
 
-### Lesson Endpoints
+- `POST /api/courses/suggestions`: course ideas
+- `GET /api/courses`: your courses (login)
+- `POST /api/courses`: generate a new course (login)
+- `GET /api/courses/stats`: course stats (login)
+- `GET /api/courses/:id`: one course (login)
+- `PUT /api/courses/:id`: update a course (login)
+- `DELETE /api/courses/:id`: delete a course (login)
 
-- `GET /api/lessons/:id` - Get lesson with content generation (Protected)
-- `PUT /api/lessons/:id` - Update lesson (Protected)
-- `POST /api/lessons/:id/blocks` - Add content block (Protected)
-- `PUT /api/lessons/:id/blocks/:index` - Update content block (Protected)
-- `DELETE /api/lessons/:id/blocks/:index` - Delete content block (Protected)
-- `POST /api/lessons/:id/audio/hinglish` - Generate Hinglish audio (Protected)
-- `GET /api/lessons/:id/analytics` - Get lesson analytics (Protected)
+### Lessons
 
-### AI Service Endpoints
+- `GET /api/lessons/:id`: get a lesson, generating content if needed (login)
+- `PUT /api/lessons/:id`: update a lesson (login)
+- `GET /api/lessons/:id/pdf`: download the lesson as a PDF (login)
+- `POST /api/lessons/:id/blocks`: add a content block (login)
+- `PUT /api/lessons/:id/blocks/:index`: edit a content block (login)
+- `DELETE /api/lessons/:id/blocks/:index`: remove a content block (login)
+- `POST /api/lessons/:id/audio/hinglish`: make Hinglish audio (login)
+- `GET /api/lessons/:id/analytics`: lesson stats (login)
 
-- `GET /api/ai/status` - Get AI service status (Public)
-- `POST /api/ai/course-suggestions` - Generate course suggestions (Public)
-- `POST /api/ai/generate-course` - Generate course outline (Protected)
-- `POST /api/ai/generate-lesson` - Generate lesson content (Protected)
-- `POST /api/ai/translate-hinglish` - Translate to Hinglish (Protected)
+### AI
 
-### YouTube Integration Endpoints
+- `GET /api/ai/status`: check the AI service
+- `POST /api/ai/course-suggestions`: course ideas from Gemini
+- `POST /api/ai/generate-course`: generate a course outline (login)
+- `POST /api/ai/generate-lesson`: generate lesson content (login)
+- `POST /api/ai/translate-hinglish`: translate to Hinglish (login)
 
-- `GET /api/youtube/search` - Search educational videos (Public)
-- `GET /api/youtube/trending` - Get trending educational videos (Public)
-- `GET /api/youtube/validate` - Validate YouTube URL (Public)
-- `GET /api/youtube/captions/:videoId` - Get video captions (Public)
-- `GET /api/youtube/embed/:videoId` - Get embed HTML (Public)
+### YouTube
 
-## Project Structure
+- `GET /api/youtube/search`: search educational videos
+- `GET /api/youtube/trending`: trending educational videos
+- `GET /api/youtube/validate`: check a YouTube URL
+- `GET /api/youtube/captions/:videoId`: a video's captions
+- `GET /api/youtube/embed/:videoId`: embed HTML for a video
+
+## Folder layout
 
 ```
 server/
 ├── config/
-│   └── database.js          # MongoDB connection
+│   └── database.js          MongoDB connection
 ├── controllers/
-│   ├── courseController.js  # Course business logic
-│   └── lessonController.js  # Lesson business logic
+│   ├── courseController.js  course logic
+│   └── lessonController.js  lesson logic
 ├── middlewares/
-│   ├── auth.js             # Auth0 authentication
-│   └── errorHandler.js     # Error handling
+│   ├── auth.js              Auth0 check
+│   └── errorHandler.js      error handling
 ├── models/
-│   ├── Course.js           # Course schema
-│   ├── Module.js           # Module schema
-│   └── Lesson.js           # Lesson schema
+│   ├── Course.js
+│   ├── Module.js
+│   └── Lesson.js
 ├── routes/
-│   ├── auth.js             # Authentication routes
-│   ├── courses.js          # Course routes
-│   ├── lessons.js          # Lesson routes
-│   ├── ai.js               # AI service routes
-│   └── youtube.js          # YouTube integration routes
+│   ├── auth.js
+│   ├── courses.js
+│   ├── lessons.js
+│   ├── ai.js
+│   └── youtube.js
 ├── services/
-│   ├── aiService.js        # Google Gemini AI integration
-│   └── youtubeService.js   # YouTube Data API integration
+│   ├── aiService.js         Google Gemini
+│   └── youtubeService.js    YouTube Data API
 ├── utils/
-│   └── helpers.js          # Utility functions
-└── server.js               # Application entry point
+│   └── helpers.js
+└── server.js                entry point
 ```
 
-## Data Models
+## Data models
 
-### Course Model
-- Basic course information (title, description, creator)
-- References to modules
-- Metadata (tags, difficulty, estimated hours)
+- **Course:** title, description, who made it, its modules, and extra info like tags, difficulty and estimated hours
+- **Module:** a section of a course, with its lessons, order and goals
+- **Lesson:** the lesson content as a list of JSON blocks, plus whether the AI has filled it in yet
 
-### Module Model
-- Module information within a course
-- References to lessons
-- Order and objectives
+## Content blocks
 
-### Lesson Model
-- Detailed lesson content as flexible JSON blocks
-- Support for multiple content types
-- AI enrichment status and metadata
+A lesson is a list of blocks like these:
 
-## Content Block Types
+- **Heading:** `{ type: "heading", text: "...", level: 2 }`
+- **Paragraph:** `{ type: "paragraph", text: "..." }`
+- **Code:** `{ type: "code", language: "javascript", text: "...", title: "..." }`
+- **List:** `{ type: "list", style: "unordered", items: [...] }`
+- **Video:** `{ type: "video", query: "...", url: "..." }`
+- **Multiple choice:** `{ type: "mcq", question: "...", options: [...], answer: 1, explanation: "..." }`
+- **Image:** `{ type: "image", url: "...", alt: "...", caption: "..." }`
 
-The lesson content system supports various block types:
+## Errors
 
-- **Heading**: `{ type: "heading", text: "...", level: 2 }`
-- **Paragraph**: `{ type: "paragraph", text: "..." }`
-- **Code**: `{ type: "code", language: "javascript", text: "...", title: "..." }`
-- **List**: `{ type: "list", style: "unordered", items: [...] }`
-- **Video**: `{ type: "video", query: "...", url: "..." }`
-- **MCQ**: `{ type: "mcq", question: "...", options: [...], answer: 1, explanation: "..." }`
-- **Image**: `{ type: "image", url: "...", alt: "...", caption: "..." }`
-
-## Security Features
-
-- **JWT Authentication**: Auth0-based secure authentication
-- **Rate Limiting**: Prevents API abuse
-- **Input Validation**: Comprehensive request validation
-- **CORS Protection**: Configurable cross-origin resource sharing
-- **Helmet Security**: HTTP security headers
-- **Environment Variables**: Sensitive data protection
-
-## Error Handling
-
-The API uses consistent error response format:
+Errors always come back in the same shape:
 
 ```json
 {
   "success": false,
   "error": "Error message",
-  "details": [] // Optional validation details
+  "details": []
 }
 ```
 
-## Development
+`details` is only there for validation errors.
 
-### Available Scripts
+## Scripts
 
-- `npm start` - Start production server
-- `npm run dev` - Start development server with nodemon
-- `npm test` - Run tests (to be implemented)
+- `npm start`: run the server
+- `npm run dev`: run with nodemon, restarting on changes
+- `npm test`: no tests yet
 
-### Code Style
-
-- Follow ES6+ standards
-- Use async/await for asynchronous operations
-- Implement proper error handling
-- Add JSDoc comments for functions
-- Use meaningful variable and function names
-
-## Deployment
-
-### Environment Setup
+## Deploying
 
 1. Set `NODE_ENV=production`
-2. Configure production MongoDB URI
-3. Set up Auth0 production application
-4. Configure production API keys
+2. Point `MONGO_URI` at your production database
+3. Set up an Auth0 application for production
+4. Add your production API keys
 
-### Recommended Deployment Platforms
+Render works well for this, but any Node host will do.
 
-- **Render** (recommended for this project)
-- **Heroku**
-- **DigitalOcean App Platform**
-- **AWS Elastic Beanstalk**
+## Logging and health
 
-## Monitoring and Logging
-
-- Request logging with Morgan
-- Error logging to console
-- Health check endpoint at `/health`
-- Graceful shutdown handling
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License.
-
-## Support
-
-For issues and questions:
-1. Check the documentation
-2. Search existing issues
-3. Create a new issue with detailed information
-
-## Changelog
-
-### Version 1.0.0
-- Initial release
-- AI-powered course generation
-- Auth0 integration
-- YouTube video integration
-- Multilingual support foundation
-- RESTful API with comprehensive endpoints
+- Requests are logged with Morgan
+- Errors are logged to the console
+- `GET /health` reports uptime
+- The server shuts down cleanly when stopped
